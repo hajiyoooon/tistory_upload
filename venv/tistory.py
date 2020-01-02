@@ -8,11 +8,6 @@ class Tistory:
 
 
     def __init__(self, args, isImplicit=True):
-        # self.client_id = client_id
-        # self.client_secret = client_secret
-        # self.callback_url = callback_url
-        # self.id = id
-        # self.passwd = passwd
         self.client_id = args[0]
         self.client_secret = args[1]
         self.callback_url = args[2]

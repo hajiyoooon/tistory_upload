@@ -2,4 +2,6 @@
 /.idea
 /venv/__pycache__/
 /venv/Lib/
-/venv/Scripts
+/venv/Scripts/
+/venv/data/
+/venv/.ipynb_checkpoints/
