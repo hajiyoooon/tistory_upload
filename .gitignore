@@ -1,0 +1,5 @@
+# ignore venv/mian.py 
+/.idea
+/venv/__pycache__/
+/venv/Lib/
+/venv/Scripts
