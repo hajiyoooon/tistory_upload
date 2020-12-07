@@ -5,32 +5,24 @@ import json
 
 
 class Tistory:
-
-
-    def __init__(self, args, isImplicit=True):
+    def __init__(self, args):
         self.client_id = args[0]
         self.client_secret = args[1]
         self.callback_url = args[2]
         self.id = args[3]
         self.passwd = args[4]
 
-        if(isImplicit):
-            self.mode = 'token'
-        else:
-            self.mode = 'code'
-
         self.oauth_url = "https://www.tistory.com/oauth/authorize"
         self.login_url = 'https://www.tistory.com/auth/login'
         self.access_token_url = "https://www.tistory.com/oauth/access_token"
 
-    def get_access_code(self):
+    def get_authentication_code(self):
         req_params = {'client_id': self.client_id,
-                    'redirect_uri': self.callback_url,
-                    'response_type': self.mode}
+                      'redirect_uri': self.callback_url,
+                      'response_type': 'code'}
 
         login_info = {'loginId': self.id,
-                      'password': self.passwd,
-                      'redirectUri': self.callback_url}
+                      'password': self.passwd}
 
         acc_token_params = {
             'client_id': self.client_id,
@@ -38,14 +30,16 @@ class Tistory:
             'redirect_uri': self.callback_url,
             'grant_type': 'authorization_code'
         }
+        
         with requests.session() as s:
             res = s.post(self.login_url, data=login_info)
-            res = s.get(self.oauth_url, params=req_params)
+            res = s.get(self.oauth_url, params=req_params, allow_redirects=False)
 
             bs = BeautifulSoup(res.text, 'html.parser')
+            
 
             p = re.compile("(?<=\?code=)[a-zA-Z:/0-9?=]*")
-            m = p.search(bs.select("head > script")[0].text)
+            m = p.search(bs.select("head > script")[0].string)
             acc_token_params['code'] = m.group()
 
             res = s.get(self.access_token_url, params=acc_token_params)
@@ -68,14 +62,8 @@ class Tistory:
         }
 
         res = requests.get(url, params=params)
-        self.print_category(json.loads(res.text))
 
         return json.loads(res.text)['tistory']['item']['categories']
-
-    def print_category(self, lst):
-        print()
-        for i, item in enumerate(lst['tistory']['item']['categories']):
-            print( str(i)+ " : "+item['label'] + "(" + item['id'] + ")")
 
     def upload(self, args):
         url = 'https://www.tistory.com/apis/post/write'
