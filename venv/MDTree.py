@@ -19,7 +19,7 @@ class Node:
         self.childs.append(child)
 
     def has_child(self):
-        return len(self.childs) == 0
+        return len(self.childs) != 0
 
     def get_childs(self):
         return self.childs
@@ -47,20 +47,22 @@ class MarkdownParser:
 
 def to_string(node):
     childs = node.get_childs()
-    print(node)
 
     for child in childs:
-        print(child)
-        # print(child.get_char(), end="")
-        
+        print(child.get_char(), end="")
+        if child.get_char is NEW_LINE :
+            print()
+
         if(child.has_child()):
             to_string(child)
 
 
-line = " # 안녕하세요\n"
+line = " # 안녕하세요\n # 반가워요"
 parser = MarkdownParser()
 
+print("===== parse =====")
 parser.parse(line)
-print()
+
+print("===== debug =====")
 parser._to_string()
 
